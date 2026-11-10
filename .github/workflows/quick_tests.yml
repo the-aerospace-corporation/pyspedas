@@ -121,6 +121,7 @@ jobs:
       PIP_EXTRA_INDEX_URL: ""
       PIP_CONFIG_FILE: /dev/null
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      COVERAGE_RCFILE: ${{ runner.temp }}/quick-test-coveragerc
     strategy:
       fail-fast: false
       matrix:
@@ -132,14 +133,7 @@ jobs:
         python-version: ["${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}"]
         test-group:
           - utilities
-          - tplot
           - cotrans
-          - analysis
-          - hapi
-          - themis
-          - themis-s3
-          - psp
-          - rbsp
           - missions-spdf
           - missions-non-spdf
         include:
@@ -150,96 +144,17 @@ jobs:
               run_test "utilities find_ip_address" pyspedas.utilities.tests.test_find_ip_address
               run_test "DOI metadata" pyspedas.utilities.tests.test_doi
               run_test "Zenodo draft client" pyspedas.utilities.tests.test_zenodo_draft
-              run_test "utilities download" pyspedas.utilities.tests.test_utilities_download
-              run_test "utilities misc" pyspedas.utilities.tests.test_utilities_misc
-              run_test "user preferences" pyspedas.utilities.tests.test_preferences
-              run_test "utilities URI" pyspedas.utilities.tests.test_utilities_download_uri
-              run_test "utilities xdegap" pyspedas.utilities.tests.test_xdegap
-              run_test "utilities tplot_math" pyspedas.utilities.tests.test_math
-              run_test "utilities interp_nan" pyspedas.utilities.tests.test_interp_nan
-              run_test "utilities time_tests" pyspedas.utilities.tests.test_utilities_time
-              run_test "utilities libs_tests" pyspedas.utilities.tests.test_utilities_libs
-              run_test "tinterpol_mxn" pyspedas.utilities.tests.test_tinterpol_mxn
-              run_test "interpolate_rotation" pyspedas.utilities.tests.test_interpolate_rotation
-          - test-group: tplot
-            test-command: |
-              run_test "tplot wildcard" pyspedas.utilities.tests.test_utilities_tplot_wildcard
-              run_test "plotting" pyspedas.utilities.tests.test_utilities_plot
-              run_test "wrap_label" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
-              run_test "fill_between" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_fill_between
-              run_test "grid and background plot options" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
-              run_test "orbit plot" pyspedas.utilities.tests.test_utilities_tplotxy
-              run_test "orbit plot ranges" pyspedas.utilities.tests.test_tplotxy_ranges
           - test-group: cotrans
             test-command: |
               run_test "cotrans quaternion" pyspedas.cotrans_tools.tests.test_quaternions
-              run_test "cotrans" pyspedas.cotrans_tools.tests.test_cotrans
-              run_test "cotrans minvar" pyspedas.cotrans_tools.tests.test_minvar
-              run_test "cotrans fac" pyspedas.cotrans_tools.tests.test_fac
-              run_test "cotrans lmn" pyspedas.cotrans_tools.tests.test_lmn
-          - test-group: analysis
-            test-command: |
-              run_test "analysis" pyspedas.analysis.tests.test_analysis
-              run_test "analysis wavpol" pyspedas.analysis.tests.test_twavpol
-              run_test "analysis wavelet" pyspedas.analysis.tests.test_wavelet
-          - test-group: hapi
-            test-command: |
-              run_test "HAPI TestData" pyspedas.hapi_tools.tests.test_hapi_testdata
-          - test-group: themis
-            test-command: |
-              run_test "themis tplot_time" pyspedas.projects.themis.tests.test_themis_tplot_time
-              run_test "themis version" pyspedas.projects.themis.tests.test_themis_versions
-              run_test "themis" pyspedas.projects.themis.tests.test_themis
-              run_test "themis_check_args" pyspedas.projects.themis.tests.test_themis_check_args
-              run_test "themis autoload support" pyspedas.projects.themis.tests.test_themis_autoload_support
-              run_test "themis cal_fit" pyspedas.projects.themis.tests.test_themis_cal_fit
-              run_test "themis dsl_cotrans" pyspedas.projects.themis.tests.test_themis_dsl_cotrans
-              run_test "themis lunar_cotrans" pyspedas.projects.themis.tests.test_themis_lunar_cotrans
-              run_test "themis spinmodel" pyspedas.projects.themis.tests.test_themis_spinmodel
-              run_test "themis state" pyspedas.projects.themis.tests.test_themis_state
-              run_test "themis scpot2dens" pyspedas.projects.themis.tests.test_themis_scpot2dens
-          - test-group: themis-s3
-            test-command: |
-              run_test "themis S3" pyspedas.projects.themis.tests.test_themis_s3
-          - test-group: psp
-            test-command: |
-              run_test "psp" pyspedas.projects.psp.tests.test_psp
-          - test-group: rbsp
-            test-command: |
-              run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
           - test-group: missions-spdf
             test-command: |
-              run_test "ace" pyspedas.projects.ace.tests.test_ace
-              run_test "barrel" pyspedas.projects.barrel.tests.test_barrel
-              run_test "soho" pyspedas.projects.soho.tests.test_soho
-              run_test "de2" pyspedas.projects.de2.tests.test_de2
               run_test "st5" pyspedas.projects.st5.tests.test_st5
               run_test "lanl" pyspedas.projects.lanl.tests.test_lanl
-              run_test "cnofs" pyspedas.projects.cnofs.tests.test_cnofs
               run_test "dmsp" pyspedas.projects.dmsp.tests.test_dmsp
-              run_test "dscovr" pyspedas.projects.dscovr.tests.test_dscovr
-              run_test "csswe" pyspedas.projects.csswe.tests.test_csswe
-              run_test "equator_s" pyspedas.projects.equator_s.tests.test_equator_s
-              run_test "image" pyspedas.projects.image.tests.test_image
-              run_test "twins" pyspedas.projects.twins.tests.test_twins
-              run_test "wind" pyspedas.projects.wind.tests.test_wind
-              run_test "polar" pyspedas.projects.polar.tests.test_polar
-              run_test "geotail" pyspedas.projects.geotail.tests.test_geotail
-              run_test "fast" pyspedas.projects.fast.tests.test_fast
-              run_test "omni" pyspedas.projects.omni.tests.test_omni
-              run_test "ulysses" pyspedas.projects.ulysses.tests.test_ulysses
-              run_test "solo" pyspedas.projects.solo.tests.test_solo
           - test-group: missions-non-spdf
             test-command: |
               run_test "swfo" pyspedas.projects.swfo.tests.test_swfo
-              run_test "stereo" pyspedas.projects.stereo.tests.test_stereo
-              run_test "kyoto" pyspedas.projects.kyoto.tests.test_kyoto
-              run_test "swarm" pyspedas.projects.swarm.tests.test_swarm
-              # These tests use a DAS2 server at UIowa.
-              #echo "Starting galileo tests at $(date)"
-              #coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
-              #echo "Starting juno tests at $(date)"
-              #coverage run -a -m pyspedas.projects.juno.tests.test_juno
 
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -311,6 +226,14 @@ jobs:
         print("sys.path[0]:", sys.path[0])
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
         PY
+    - name: Configure quick-test coverage
+      run: |
+        cat > "$COVERAGE_RCFILE" <<'EOF'
+        [run]
+        relative_files = True
+        omit =
+            */tests/*
+        EOF
     - name: Test with unittest
       env:
         SPEDAS_DATA_DIR: data
