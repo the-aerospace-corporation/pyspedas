@@ -231,6 +231,8 @@ jobs:
         cat > "$coverage_rcfile" <<'EOF'
         [run]
         relative_files = True
+        include =
+            */pyspedas/*
         omit =
             */tests/*
         EOF
