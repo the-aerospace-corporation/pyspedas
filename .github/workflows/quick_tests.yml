@@ -48,11 +48,14 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
     - name: Build shared artifacts
       run: |
         python -m venv ../.venv
         source ../.venv/bin/activate
         python -m pip install --group setup
+        # Warm the pip cache with PySPEDAS runtime dependencies for test jobs.
+        python -m pip install --no-build-isolation .
         python -m build --no-isolation
         tar --exclude='./.git' --exclude='./dist' --exclude='./build' \
           --exclude='*/__pycache__' -czf "$RUNNER_TEMP/pyspedas-source.tar.gz" .
@@ -160,6 +163,7 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
+        cache: pip
     # Each parallel test job downloads the shared inputs but keeps its own environment.
     - name: Download prepared source
       uses: actions/download-artifact@v6
