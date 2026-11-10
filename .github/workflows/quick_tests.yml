@@ -269,6 +269,7 @@ jobs:
         [run]
         include =
           pyspedas/*
+          */pyspedas/*
         relative_files = True
         omit =
           */tests/*
@@ -385,14 +386,14 @@ jobs:
         python -m pip install coverage
         if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
           python -m coverage combine coverage-data
-          python -m coverage report --include='pyspedas/*,*/pyspedas/*' --omit='*/tests/*'
+          python -m coverage report --omit='*/tests/*'
           {
             echo "## Coverage"
             echo
-            python -m coverage report --include='pyspedas/*,*/pyspedas/*' --omit='*/tests/*' --format=markdown
+            python -m coverage report --omit='*/tests/*' --format=markdown
           } >> "$GITHUB_STEP_SUMMARY"
-          python -m coverage xml --include='pyspedas/*,*/pyspedas/*' --omit='*/tests/*' -o coverage.xml
-          python -m coverage html --include='pyspedas/*,*/pyspedas/*' --omit='*/tests/*' -d htmlcov
+          python -m coverage xml --omit='*/tests/*' -o coverage.xml
+          python -m coverage html --omit='*/tests/*' -d htmlcov
         else
           echo "No coverage data was uploaded by the test groups."
           exit 1
