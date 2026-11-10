@@ -121,7 +121,6 @@ jobs:
       PIP_EXTRA_INDEX_URL: ""
       PIP_CONFIG_FILE: /dev/null
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
-      COVERAGE_RCFILE: ${{ runner.temp }}/quick-test-coveragerc
     strategy:
       fail-fast: false
       matrix:
@@ -228,12 +227,14 @@ jobs:
         PY
     - name: Configure quick-test coverage
       run: |
-        cat > "$COVERAGE_RCFILE" <<'EOF'
+        coverage_rcfile="$RUNNER_TEMP/quick-test-coveragerc"
+        cat > "$coverage_rcfile" <<'EOF'
         [run]
         relative_files = True
         omit =
             */tests/*
         EOF
+        echo "COVERAGE_RCFILE=$coverage_rcfile" >> "$GITHUB_ENV"
     - name: Test with unittest
       env:
         SPEDAS_DATA_DIR: data
