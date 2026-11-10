@@ -262,6 +262,23 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         source ../.venv/bin/activate
+        # Scope coverage to modules actually imported by the test that ran, instead of
+        # the whole pyspedas tree (.coveragerc's source_pkgs would report 0% for every
+        # file untouched by this job's small test subset).
+        cat > "$RUNNER_TEMP/quick_tests_coveragerc" <<'COVERAGERC'
+[run]
+include =
+  pyspedas/*
+relative_files = True
+omit =
+  */tests/*
+
+[paths]
+pyspedas =
+  pyspedas
+  **/site-packages/pyspedas
+  **/dist-packages/pyspedas
+COVERAGERC
         # Group each test and annotate failures without duplicating shell logic.
         run_test() {
           local name="$1"
@@ -274,7 +291,7 @@ jobs:
           start_time=$(date +%s)
           echo "::group::$name"
           echo "Starting $name tests at `date`"
-          if coverage run --source=pyspedas --omit='*/tests/*' -a -m "$module"; then
+          if coverage run --rcfile="$RUNNER_TEMP/quick_tests_coveragerc" -a -m "$module"; then
             status=0
             result="PASS"
           else
