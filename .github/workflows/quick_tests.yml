@@ -286,7 +286,7 @@ jobs:
           start_time=$(date +%s)
           echo "::group::$name"
           echo "Starting $name tests at `date`"
-          if coverage run -a -m "$module"; then
+          if coverage run --rcfile="$COVERAGE_RCFILE" --include='pyspedas/*,*/pyspedas/*' --omit='*/tests/*' -a -m "$module"; then
             status=0
             result="PASS"
           else
@@ -383,6 +383,12 @@ jobs:
         source =
             pyspedas
             */.venv/lib/python*/site-packages/pyspedas
+        [report]
+        include =
+            pyspedas/*
+            */pyspedas/*
+        omit =
+            */tests/*
         EOF
         if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
           python -m coverage combine coverage-data
