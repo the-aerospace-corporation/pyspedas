@@ -266,19 +266,19 @@ jobs:
         # the whole pyspedas tree (.coveragerc's source_pkgs would report 0% for every
         # file untouched by this job's small test subset).
         cat > "$RUNNER_TEMP/quick_tests_coveragerc" <<'COVERAGERC'
-[run]
-include =
-  pyspedas/*
-relative_files = True
-omit =
-  */tests/*
+        [run]
+        include =
+          pyspedas/*
+        relative_files = True
+        omit =
+          */tests/*
 
-[paths]
-pyspedas =
-  pyspedas
-  **/site-packages/pyspedas
-  **/dist-packages/pyspedas
-COVERAGERC
+        [paths]
+        pyspedas =
+          pyspedas
+          **/site-packages/pyspedas
+          **/dist-packages/pyspedas
+        COVERAGERC
         # Group each test and annotate failures without duplicating shell logic.
         run_test() {
           local name="$1"
