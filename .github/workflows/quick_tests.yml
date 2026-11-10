@@ -159,11 +159,6 @@ jobs:
               run_test "swfo" pyspedas.projects.swfo.tests.test_swfo
 
     steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: pip
     # Each parallel test job downloads the shared inputs but keeps its own environment.
     - name: Download prepared source
       uses: actions/download-artifact@v6
@@ -177,6 +172,11 @@ jobs:
         path: quick-test-wheel
     - name: Unpack prepared source
       run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
     - name: Create test and resolver environments
       run: |
         python -m venv ../.venv
